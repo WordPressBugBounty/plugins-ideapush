@@ -3,7 +3,7 @@
 *		Plugin Name: IdeaPush - Feature Request Manager
 *		Plugin URI: https://www.northernbeacheswebsites.com.au
 *		Description: IdeaPush is a feature request management system for WordPress 
-*		Version: 8.71
+*		Version: 8.72
 *		Author: Martin Gibson
 *		Text Domain: ideapush   
 *		Support: https://www.northernbeacheswebsites.com.au/contact
@@ -763,52 +763,58 @@ add_action( 'wp_ajax_add_taxonomy_item', 'idea_push_add_taxonomy_item' );
 
 
 //lets delete existing taxonomies and rename others where necessary
+add_action( 'wp_ajax_taxonomy_save_routine', 'idea_push_taxonomy_save_routine' );
 function idea_push_taxonomy_save_routine() {
     
+    
+    if(isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'taxonomy_save_routine')){
+        if (current_user_can('administrator') || current_user_can('manage_idea_push_settings')) {
 
-    //get board name from ajax call
-    $comparisonData = $_POST['comparisonData'];
-    $explodeTheData = explode("^^^", $comparisonData);
-    
-    $boardIdArray = array();
-    
-    foreach($explodeTheData as $board){
-        
-        $anotherExplosion = explode("|", $board);
-        $boardId = $anotherExplosion[0];
-        $boardName = $anotherExplosion[1];
+            //get board name from ajax call
+            $comparisonData = $_POST['comparisonData'];
+            $explodeTheData = explode("^^^", $comparisonData);
+            
+            $boardIdArray = array();
+            
+            foreach($explodeTheData as $board){
                 
-        array_push($boardIdArray,$boardId);
-        
-        //now lets change the name of existing taxonomies
-        $termObject = get_term($boardId,'boards');
-        
-        //if the there's a match lets update the name if it has changed
-        if(!is_wp_error($termObject)){
-            
-            $termName = $termObject->name;
-            
-            if($boardName !== $termName){
-                //they don't match so lets update this term name with the new board name
-                wp_update_term($boardId,'boards',array('name' => $boardName)); 
-            }   
-        }
+                $anotherExplosion = explode("|", $board);
+                $boardId = $anotherExplosion[0];
+                $boardName = $anotherExplosion[1];
+                        
+                array_push($boardIdArray,$boardId);
+                
+                //now lets change the name of existing taxonomies
+                $termObject = get_term($boardId,'boards');
+                
+                //if the there's a match lets update the name if it has changed
+                if(!is_wp_error($termObject)){
+                    
+                    $termName = $termObject->name;
+                    
+                    if($boardName !== $termName){
+                        //they don't match so lets update this term name with the new board name
+                        wp_update_term($boardId,'boards',array('name' => $boardName)); 
+                    }   
+                }
 
-    }
-    
-    
-    //lets cycle through the existing terms in the taxonomy
-    $existingTerms = get_terms('boards',array( "hide_empty" => 0 ));
-    
-    foreach($existingTerms as $term){
+            }
+            
+            
+            //lets cycle through the existing terms in the taxonomy
+            $existingTerms = get_terms('boards',array( "hide_empty" => 0 ));
+            
+            foreach($existingTerms as $term){
+                
+                $termId = $term->term_id;
+                
+                if(!in_array($termId,$boardIdArray)){
+                    //if the term is not in our array delete it because it's not authorised to exist and it will cause confusion
+                    wp_delete_term($termId,'boards'); 
         
-        $termId = $term->term_id;
-        
-        if(!in_array($termId,$boardIdArray)){
-            //if the term is not in our array delete it because it's not authorised to exist and it will cause confusion
-            wp_delete_term($termId,'boards'); 
-  
-        }  
+                }  
+            }
+        }
     }
     
     
@@ -817,7 +823,7 @@ function idea_push_taxonomy_save_routine() {
 
  
 }
-add_action( 'wp_ajax_taxonomy_save_routine', 'idea_push_taxonomy_save_routine' );
+
 
 
 

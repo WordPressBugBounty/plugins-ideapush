@@ -476,11 +476,14 @@ jQuery(document).ready(function ($) {
         console.log(data);
 
         $('#idea_push_board_configuration').val(data);  
-        
+
+        var nonce = $('#board-settings').attr('data-nonce');
+
         //lets send off the comparison data to see if we need to delete any existing terms or rename them
         var data = {
             'action': 'taxonomy_save_routine',
             'comparisonData': comparisonData,
+            'nonce': nonce,
         };
 
         jQuery.post(ajaxurl, data, function (response) {

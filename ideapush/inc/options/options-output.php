@@ -1473,7 +1473,7 @@ function idea_push_boards_callback(){
     
     ?>
 
-    <tr class="ideapush_settings_row" valign="top">
+    <tr class="ideapush_settings_row" valign="top" >
         <td scope="row" colspan="2">
             <div class="inside">
                 <label for="idea_push_create_board"><?php echo __('Create Board','ideapush'); ?></label>
@@ -1482,7 +1482,7 @@ function idea_push_boards_callback(){
                     
                     <br>
                 
-                    <ul id="board-settings">
+                    <ul id="board-settings" data-nonce="<?php echo wp_create_nonce('taxonomy_save_routine'); ?>">
                     
                         <?php
                             //lets re-write these settings so it makes it easier to edit in the future

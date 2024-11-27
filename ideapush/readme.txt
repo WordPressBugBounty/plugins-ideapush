@@ -4,8 +4,8 @@
 * Tags: idea, push, feature request, idea board, idea collector
 * Requires at least: 4.0
 * Requires PHP: 5.2.4
-* Tested up to: 6.6.1
-* Stable tag: 8.71
+* Tested up to: 6.7.1
+* Stable tag: 8.72
 * License: GPLv2 or later
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,9 @@ Please check out the Support tab in the plugin settings for FAQ's
 
 
 == Changelog ==
+
+= 8.72 =
+* Small security update
 
 = 8.71 =
 * Small security update
@@ -806,6 +809,9 @@ Please check out the Support tab in the plugin settings for FAQ's
 
 
 == Upgrade Notice ==
+
+= 8.72 =
+* Small security update
 
 = 8.71 =
 * Small security update
